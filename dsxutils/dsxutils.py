@@ -1,15 +1,19 @@
 import pkg_resources, pip, requests, io, tarfile, json
 
 def get_package_version(pkg_name):
+    """Get the version of the given package"""
     return  pkg_resources.get_distribution(pkg_name).version
 
 def upgrade_package(pkg_name):
+    """Upgrade the given package to the latest version"""
+    print("Upgrading package '%s'..." % pkg_name)
     pip.main(['install', '--upgrade', pkg_name])
 
 def get_file_content(credentials):
     """For given credentials, this functions returns a BytesIO object containg the file content
     from the associated Bluemix Object Storage V3."""
 
+    print("Retrieving contents for file '%s'..." % credentials['filename'])
     url1 = ''.join([credentials['auth_url'], '/v3/auth/tokens'])
     data = {'auth': {'identity': {'methods': ['password'],
             'password': {'user': {'name': credentials['username'],'domain': {'id': credentials['domain_id']},
@@ -29,6 +33,8 @@ def get_file_content(credentials):
     return io.BytesIO(resp2.content).getvalue()
 
 def write_file_to_disk(credentials):
+    """For given credentials, write the file content to disk """
+    print("Writing file '%s' to disk...")
     content = get_file_content(credentials)
     filename = credentials['filename']
     with open(filename, 'wb') as f:
@@ -36,6 +42,8 @@ def write_file_to_disk(credentials):
     f.close()
 
 def write_and_extract_tarball(credentials):
+    """For given credentials, write and extract the tarball contents to disk"""
+    print("Extracting '%s'...")
     write_file_to_disk(credentials)
     tar = tarfile.open(credentials['filename'])
     tar.extractall()
