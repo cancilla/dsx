@@ -34,8 +34,9 @@ def get_file_content(credentials):
 
 def write_file_to_disk(credentials):
     """For given credentials, write the file content to disk """
-    print("Writing file '%s' to disk...")
     content = get_file_content(credentials)
+
+    print("Writing file '%s' to disk..." % credentials['filename'])
     filename = credentials['filename']
     with open(filename, 'wb') as f:
         f.write(content)
@@ -43,8 +44,9 @@ def write_file_to_disk(credentials):
 
 def write_and_extract_tarball(credentials):
     """For given credentials, write and extract the tarball contents to disk"""
-    print("Extracting '%s'...")
     write_file_to_disk(credentials)
+
+    print("Extracting '%s'..." % credentials['filename'])
     tar = tarfile.open(credentials['filename'])
     tar.extractall()
     tar.close()
