@@ -1,5 +1,14 @@
+import pkg_resources
+import pip
+
+def get_package_version(pkg_name):
+    return  pkg_resources.get_distribution(pkg_name).version
+
+def upgrade_package(pkg_name):
+    pip.main(['install', '--upgrade', pkg_name])
+
 def get_file_content(credentials):
-    """For given credentials, this functions returns a StringIO object containg the file content 
+    """For given credentials, this functions returns a BytesIO object containg the file content
     from the associated Bluemix Object Storage V3."""
 
     url1 = ''.join([credentials['auth_url'], '/v3/auth/tokens'])
@@ -17,8 +26,18 @@ def get_file_content(credentials):
     s_subject_token = resp1.headers['x-subject-token']
     headers2 = {'X-Auth-Token': s_subject_token, 'accept': 'application/json'}
     resp2 = requests.get(url=url2, headers=headers2)
-    output = io.BytesIO(resp2.content)
-    output.write(resp2.content)
-    return output.getvalue()
 
+    return io.BytesIO(resp2.content).getvalue()
 
+def write_file_to_disk(credentials):
+    content = get_file_content(creds)
+    filename = creds['filename']
+    with open(filename, 'wb') as f:
+        f.write(content)
+    f.close()
+
+def write_and_extract_tarball(credentials):
+    write_file_to_disk(credentials)
+    tar = tarfile.open(creds['filename'])
+    tar.extractall()
+    tar.close()
