@@ -13,7 +13,7 @@ def get_file_content(credentials):
     """For given credentials, this functions returns a BytesIO object containg the file content
     from the associated Bluemix Object Storage V3."""
 
-    print("Retrieving contents for file '%s'..." % credentials['filename'])
+    print("Retrieving contents for file '%s'..." % credentials['filename'], end="")
     url1 = ''.join([credentials['auth_url'], '/v3/auth/tokens'])
     data = {'auth': {'identity': {'methods': ['password'],
             'password': {'user': {'name': credentials['username'],'domain': {'id': credentials['domain_id']},
@@ -30,23 +30,29 @@ def get_file_content(credentials):
     headers2 = {'X-Auth-Token': s_subject_token, 'accept': 'application/json'}
     resp2 = requests.get(url=url2, headers=headers2)
 
+    print("done")
+
     return io.BytesIO(resp2.content).getvalue()
 
 def write_file_to_disk(credentials):
     """For given credentials, write the file content to disk """
     content = get_file_content(credentials)
 
-    print("Writing file '%s' to disk..." % credentials['filename'])
+    print("Writing file '%s' to disk..." % credentials['filename'], end="")
     filename = credentials['filename']
     with open(filename, 'wb') as f:
         f.write(content)
     f.close()
 
+    print("done")
+
 def write_and_extract_tarball(credentials):
     """For given credentials, write and extract the tarball contents to disk"""
     write_file_to_disk(credentials)
 
-    print("Extracting '%s'..." % credentials['filename'])
+    print("Extracting '%s'..." % credentials['filename'], end="")
     tar = tarfile.open(credentials['filename'])
     tar.extractall()
     tar.close()
+
+    print("done")
