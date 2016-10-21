@@ -1,5 +1,4 @@
-import pkg_resources
-import pip
+import pkg_resources, pip, requests, io, tarfile, json
 
 def get_package_version(pkg_name):
     return  pkg_resources.get_distribution(pkg_name).version
