@@ -30,14 +30,14 @@ def get_file_content(credentials):
     return io.BytesIO(resp2.content).getvalue()
 
 def write_file_to_disk(credentials):
-    content = get_file_content(creds)
-    filename = creds['filename']
+    content = get_file_content(credentials)
+    filename = credentials['filename']
     with open(filename, 'wb') as f:
         f.write(content)
     f.close()
 
 def write_and_extract_tarball(credentials):
     write_file_to_disk(credentials)
-    tar = tarfile.open(creds['filename'])
+    tar = tarfile.open(credentials['filename'])
     tar.extractall()
     tar.close()
